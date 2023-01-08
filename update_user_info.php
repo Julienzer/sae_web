@@ -1,7 +1,7 @@
 <?php
 
 // Inclure la bibliothèque de JWT de Firebase
-require_once 'path/to/firebase/php-jwt/src/JWT.php';
+require_once 'C:/Users/julie/vendor/firebase/php-jwt/src/JWT.php'; // à changer en fonction du dossier d'installation
 
 // Clé secrète utilisée pour vérifier les JWT
 $secret_key = 'your_secret_key';
