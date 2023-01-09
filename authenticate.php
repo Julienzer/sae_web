@@ -4,7 +4,7 @@
 require_once 'C:/Users/julie/vendor/firebase/php-jwt/src/JWT.php'; // à changer en fonction du dossier d'installation
 
 // Clé secrète utilisée pour signer les JWT
-$secret_key = 'your_secret_key';
+$secret_key = 'G+KbPeShVkYp3s6v9y$B&E)H@McQfTjW';
 
 // Vérifier si une demande de connexion a été envoyée
 if (isset($_POST['username']) && isset($_POST['password'])) {

@@ -4,7 +4,7 @@
 require_once 'C:/Users/julie/vendor/firebase/php-jwt/src/JWT.php'; // à changer en fonction du dossier d'installation
 
 // Clé secrète utilisée pour vérifier les JWT
-$secret_key = 'your_secret_key';
+$secret_key = 'G+KbPeShVkYp3s6v9y$B&E)H@McQfTjW';
 
 // Vérifier si un JWT a été envoyé dans l'en-tête d'autorisation
 if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
