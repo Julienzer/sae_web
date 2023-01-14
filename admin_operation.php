@@ -1,29 +1,23 @@
 <?php
 
-//connect to the database
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "sae";
+/** @var mysqli $conn */
+$conn = include __DIR__ . '/includes/database_connection.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+/** @var array $tokenData = [
+ *      'id_user' => '1',
+ *      'username' => 'user',
+ *      'privilege' => 'admin'
+ * }
+ */
+$tokenData = include __DIR__ . '/includes/check_token.php';
 
-//check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// check if user is authenticated
-session_start();
-if (!isset($_SESSION['user'])) {
-    echo json_encode(array("error" => "Access denied"));
-    exit;
-}
-
-// check if user have the right permissions
-if(!$_SESSION['user']['privilege'] == "admin"){
-    echo json_encode(array("error" => "Access denied"));
-    exit;
+if ('admin' !== $tokenData['privilege']) {
+    http_response_code(401);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error' => 'Infufifant permissions 🤓'
+    ]);
+    return;
 }
 
 // get the etudiant id
