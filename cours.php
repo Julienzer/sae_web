@@ -1,4 +1,5 @@
 <?php
+
 //connect to the database
 $servername = "localhost";
 $username = "root";
@@ -12,21 +13,43 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// check if user is authenticated
+session_start();
+if (!isset($_SESSION['user'])) {
+    echo json_encode(array("error" => "Access denied"));
+    exit;
+}
+
+// check if user have the right permissions
+if(!$_SESSION['user']['privilege'] == "admin"){
+    echo json_encode(array("error" => "Access denied"));
+    exit;
+}
+
+// get the course id
+if (!isset($_GET['id'])) {
+    echo json_encode(array("error" => "Invalid request"));
+    exit;
+}
+
+$id = $_GET['id'];
+
 //query the Cours table
-$query = "SELECT * FROM cours";
-$result = $conn->query($query);
+$query = "SELECT * FROM Cours WHERE id_cours = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("s", $id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 //fetch the data
-$courses = array();
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        $courses[] = $row;
-    }
-}
+$course = $result->fetch_assoc();
 
 //return the data as JSON
 header('Content-Type: application/json');
-echo json_encode($courses);
+if($course)
+    echo json_encode($course);
+else
+    echo json_encode(array("error" => "No course found with this id"));
 
 $conn->close();
-?>
+
