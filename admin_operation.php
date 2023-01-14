@@ -20,6 +20,21 @@ if ('admin' !== $tokenData['privilege']) {
     return;
 }
 
+
+switch ($_SERVER['REQUEST_METHOD']) {
+    case 'POST':
+        $data = $_POST['data'];
+        break;
+    case 'DELETE':
+        $id = $_GET['id'];
+        break;
+    case 'PUT':
+        $data = $_POST['data'];
+        break;
+    default:
+
+}
+
 // get the etudiant id
 if (!isset($_GET['id'])) {
     echo json_encode(array("error" => "Invalid request"));
