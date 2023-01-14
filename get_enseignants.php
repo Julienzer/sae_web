@@ -27,15 +27,15 @@ if(!$_SESSION['user']['privilege'] == "enseignant"){
 }
 
 // get the enseignant id
-if (!isset($_GET['id'])) {
+if (!isset($_POST['id'])) {
     echo json_encode(array("error" => "Invalid request"));
     exit;
 }
 
-$id = $_GET['id'];
+$id = $_POST['id'];
 
 //query the enseignant table
-$query = "SELECT * FROM etudiant, cours WHERE etudiant.id_enseignant = cours.id_enseignant";
+$query = "SELECT * FROM enseignant, cours WHERE cours.id_enseignant = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $id);
 $stmt->execute();
