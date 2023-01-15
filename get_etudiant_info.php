@@ -1,40 +1,31 @@
 <?php
 
-//connect to the database
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "sae";
+/** @var mysqli $conn */
+$conn = include __DIR__ . '/includes/database_connection.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+/** @var array $tokenData = [
+ *      'id_user' => '1',
+ *      'username' => 'user',
+ *      'privilege' => 'admin'
+ * }
+ */
+$tokenData = include __DIR__ . '/includes/check_token.php';
 
-//check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+if ('etudiant' !== $tokenData['privilege']) {
+    http_response_code(401);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error' => 'Infufifant permissions 🤓'
+    ]);
+    return;
 }
 
-// check if user is authenticated
-session_start();
-if (!isset($_SESSION['user'])) {
-    echo json_encode(array("error" => "Access denied"));
-    exit;
-}
 
-// check if user have the right permissions
-if(!$_SESSION['user']['privilege'] == "etudiant"){
-    echo json_encode(array("error" => "Access denied"));
-    exit;
-}
+$id = $_POST['id'];
 
-// get the course id
-if (!isset($_GET['id'])) {
-    echo json_encode(array("error" => "Invalid request"));
-    exit;
-}
 
-$id = $_GET['id'];
 
-//query the Cours table
+//query the etudiant table
 $query = "SELECT * FROM etudiant, cours WHERE etudiant.id_regroupement = cours.id_regroupement";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $id);
