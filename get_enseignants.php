@@ -11,7 +11,7 @@ $conn = include __DIR__ . '/includes/database_connection.php';
  */
 $tokenData = include __DIR__ . '/includes/check_token.php';
 
-if ('admin' !== $tokenData['privilege']) {
+if ('enseignant' !== $tokenData['privilege']) {
     http_response_code(401);
     header('Content-Type: application/json');
     echo json_encode([
@@ -21,27 +21,9 @@ if ('admin' !== $tokenData['privilege']) {
 }
 
 
-switch ($_SERVER['REQUEST_METHOD']) {
-    case 'POST':
-        $data = $_POST['data'];
-        break;
-    case 'DELETE':
-        $id = $_GET['id'];
-        break;
-    case 'PUT':
-        $data = $_POST['data'];
-        break;
-    default:
+$id = $_POST['id'];
 
-}
 
-// get the etudiant id
-if (!isset($_GET['id'])) {
-    echo json_encode(array("error" => "Invalid request"));
-    exit;
-}
-
-$id = $_GET['id'];
 
 //query the etudiant table
 $query = "SELECT * FROM enseignant, cours WHERE enseignant.id_enseignant = cours.id_enseignant";
