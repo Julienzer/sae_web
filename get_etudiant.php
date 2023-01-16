@@ -12,9 +12,8 @@ $conn = include __DIR__ . '/includes/database_connection.php';
 
 $tokenData = include __DIR__ . '/includes/check_token.php';
 
-var_dump($tokenData);
 
-if ('etudiant' !== $tokenData['privilege']) {
+if ('etudiant' !== $tokenData['nom_privilege']) {
     http_response_code(401);
     header('Content-Type: application/json');
     echo json_encode([
@@ -28,7 +27,7 @@ $id = $tokenData['id_user'];
 
 
 //query the etudiant table
-$query = 'SELECT * FROM etudiant, cours WHERE etudiant.id_regroupement = cours.id_regroupement and etudiant.id_etudiant = ?';
+$query = 'SELECT * FROM COURS WHERE cours.id_regroupement IN (SELECT id_regroupement FROM Appartient WHERE Appartient.id_user = ? );';
 $stmt = $conn->prepare($query);
 $stmt->bind_param('s', $id);
 $stmt->execute();

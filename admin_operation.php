@@ -11,7 +11,7 @@ $conn = include __DIR__ . '/includes/database_connection.php';
  */
 $tokenData = include __DIR__ . '/includes/check_token.php';
 
-if ('admin' !== $tokenData['privilege']) {
+if ('administrateur' !== $tokenData['privilege']) {
     http_response_code(401);
     header('Content-Type: application/json');
     echo json_encode([

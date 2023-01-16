@@ -11,7 +11,7 @@ $conn = include __DIR__ . '/includes/database_connection.php';
  */
 $tokenData = include __DIR__ . '/includes/check_token.php';
 
-if ('enseignant' !== $tokenData['privilege']) {
+if ('enseignant' !== $tokenData['nom_privilege']) {
     http_response_code(401);
     header('Content-Type: application/json');
     echo json_encode([
@@ -26,7 +26,7 @@ $id = $tokenData['id_user'];
 
 
 //query the etudiant table
-$query = "SELECT * FROM utilisateur, cours WHERE id_utilisateur = id_enseignant AND id_utilisateur = ?";
+$query = "SELECT * FROM cours WHERE cours.id_user = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $id);
 $stmt->execute();

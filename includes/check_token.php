@@ -5,12 +5,13 @@ $conn = include __DIR__ . '/database_connection.php';
 $token = $_SERVER['HTTP_AUTH'];
 
 $tokenQ = <<<EOF
-    SELECT user.id_user, user.username, user.privilege
-    FROM token
-    LEFT JOIN user
-    ON token.user_id = user.id_user
-    WHERE token = ?
-    LIMIT 1;
+    select * 
+    from utilisateur,privilege 
+    where privilege.id_privilege = utilisateur.id_privilege 
+    and utilisateur.id_user 
+            in (select id_user 
+                from token 
+                where token = ?);
 EOF;
 
 

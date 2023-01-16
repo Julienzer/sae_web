@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 if (
-    !isset($_POST['login'], $_POST['password'])
+    !isset($_POST['email'], $_POST['password'])
 ) {
     http_response_code(401);
     return;
@@ -16,15 +16,17 @@ if (
 /** @var mysqli $conn */
 $conn = include __DIR__ . '/includes/database_connection.php';
 
-$login = $_POST['login'];
+$login = $_POST['email'];
 $password = $_POST['password'];
+
+
 
 // todo : use crypt function, do NOT store plain password in database : https://www.php.net/manual/en/function.crypt.php
 $q = <<<EOF
-    SELECT u.id_user, u.username, u.privilege
-    FROM user u
-    WHERE username = ?
-    AND password = ?
+    SELECT u.id_user, u.nom_user, u.id_privilege
+    FROM utilisateur u
+    WHERE  u.email_user like ?
+    AND u.pwd like ?
     LIMIT 1;
 EOF;
 
@@ -39,12 +41,12 @@ if (null === $data) {
     return;
 }
 
-$userId = (int) $data['id_user'];
+$userId =  $data['id_user'];
 
 $tokenQ = <<<EOF
     SELECT *
     FROM token
-    WHERE token.user_id = ?
+    WHERE token.id_user = ?
 EOF;
 
 $stmt = $conn->prepare($tokenQ);
@@ -58,7 +60,7 @@ if (null === $data) {
     $token = bin2hex(random_bytes(16));
 
     $insertTokenQ = <<<EOF
-        INSERT INTO token (user_id, token)
+        INSERT INTO token (id_user,token)
         VALUES (?, ?)
 EOF;
 
