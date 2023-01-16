@@ -15,7 +15,7 @@ if ('admin' !== $tokenData['privilege']) {
     http_response_code(401);
     header('Content-Type: application/json');
     echo json_encode([
-        'error' => 'Infufifant permissions 🤓'
+        'error' => 'Insufisant permissions 🤓'
     ]);
     return;
 }

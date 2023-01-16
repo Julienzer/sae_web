@@ -12,6 +12,7 @@ if (
     return;
 }
 
+
 /** @var mysqli $conn */
 $conn = include __DIR__ . '/includes/database_connection.php';
 
