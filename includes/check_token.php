@@ -4,16 +4,15 @@
 $conn = include __DIR__ . '/database_connection.php';
 $token = $_SERVER['HTTP_AUTH'];
 
-$tokenQ = <<<EOF
-    select * 
-    from utilisateur,privilege 
-    where privilege.id_privilege = utilisateur.id_privilege 
-    and utilisateur.id_user 
+$tokenQ= <<<EOF
+    select u.id_user,p.nom_privilege
+    from utilisateur u ,privilege p 
+    where p.id_privilege = u.id_privilege 
+    and u.id_user 
             in (select id_user 
                 from token 
                 where token = ?);
 EOF;
-
 
 $stmt = $conn->prepare($tokenQ);
 $stmt->bind_param('s', $token);
@@ -26,5 +25,4 @@ if (null === $data) {
         'error' => 'Aucun token trouvé.'
     ]);
 }
-
 return $data;

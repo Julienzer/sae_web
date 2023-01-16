@@ -9,6 +9,10 @@ $conn = include __DIR__ . '/includes/database_connection.php';
  *      'privilege' => 'admin'
  * }
  */
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    return;
+}
 
 $tokenData = include __DIR__ . '/includes/check_token.php';
 

@@ -4,23 +4,32 @@ $conn = include __DIR__ . '/includes/database_connection.php';
 
 /** @var array $tokenData = [
  *      'id_user' => '1',
- *      'username' => 'user',
- *      'privilege' => 'admin'
+ *      'privilege' => 'administrateur'
  * }
  */
-$tokenData = include __DIR__ . '/includes/check_token.php';
-if ('administrateur' !== $tokenData['nom_privilege']) {
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    return;
+}
+
+//vérification du rôle d'administrateur.
+require_once('./includes/check_privilege.php');
+$verif_privilege = check_privilege('administrateur');
+
+if (!$verif_privilege) {
     http_response_code(401);
     header('Content-Type: application/json');
     echo json_encode([
-        'error' => 'Insufisant permissions 🤓'
+        'error' => 'oh tes qui toi'
     ]);
     return;
 }
 
-$mail = $_POST['email_new_user'];
+//récupération du mail de l'utilisateur à supprimer.
+$mail = $_POST['email_user_delete'];
 
-
+// Vérifie que l'utilisateur existe bien dans la base.
 $query = "SELECT * FROM utilisateur WHERE email_user = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $mail);
@@ -36,7 +45,8 @@ if (!$course){
     ]);
     return;
 }
-
+//TODO -> créer une fonction de vérification de rôle.
+// récupération du privilège
 $query = <<<EOF
     select * 
     from utilisateur,privilege 
@@ -68,7 +78,6 @@ if($course['nom_privilege'] == 'enseignant'){
 $query = "DELETE FROM token where id_user = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param('s',$course['id_user']);
-
 $stmt -> execute();
 
 $query = "DELETE FROM utilisateur where id_user = ?";
@@ -82,11 +91,5 @@ echo json_encode([
     'success' => 'Utilisateur supprimé'
 ]);
 
-
-
 return;
-
-
-
-
 ?>
