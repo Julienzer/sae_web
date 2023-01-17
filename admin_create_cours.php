@@ -27,8 +27,8 @@ if (
 }
 
 // récupération des variables entrées avec la méthode post.
-$debut = $_POST['heure_debut'];
-$fin = $_POST['heure_fin'];
+$heure_debut_cours = $_POST['heure_debut'];
+$heure_fin_cours = $_POST['heure_fin'];
 $user = $_POST['id_user'];
 $salle = $_POST['id_salle'];
 $matiere = $_POST['id_matiere'];
@@ -36,9 +36,9 @@ $regroupement = $_POST['id_regroupement'];
 $type_cours = $_POST['id_type_cours'];
 
 //Insertion d'un cours par l'administrateur.
-$query = "INSERT INTO `cours` (`heure_debut`, `heure_fin`, `id_user`, `id_salle`, `id_matiere`, `id_regroupement`, `id_type_cours`) VALUES (?,?,?,?,?,?,?);";
+$query = "INSERT INTO cours (heure_debut, heure_fin, id_user, id_salle, id_matiere, id_regroupement, id_type_cours) VALUES (?,?,?,?,?,?,?)";
 $stmt = $conn->prepare($query);
-$stmt->bind_param("ssiiiii", $debut, $fin, $user, $salle, $matiere, $regroupement, $type_cours);
+$stmt->bind_param("ssiiiii", $heure_debut_cours, $heure_fin_cours, $user, $salle, $matiere, $regroupement, $type_cours);
 $stmt->execute();
 $result = $stmt->get_result();
 
