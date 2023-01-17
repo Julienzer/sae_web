@@ -64,6 +64,7 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param("sssis",$nom,$prenom, $mail, $privilege, $password);
 $stmt->execute();
 
+
 //récupération du rôle de l'utilisateur pour les opérations suivantes.
 $query = "SELECT nom_privilege FROM privilege WHERE id_privilege = ?";
 $stmt = $conn->prepare($query);
@@ -73,6 +74,9 @@ $result = $stmt->get_result();
 //fetch the data
 $result_privilege = $result->fetch_assoc();
 
+if($result_privilege['nom_privilege'] != 'etudiant'){
+    return;
+}
 //récupération de l'id de l'utilisateur pour l'affectation d'un etudiant à un groupe.
 $query = "SELECT id_utilisateur FROM utilisateur WHERE email_utilisateur = ?";
 $stmt = $conn->prepare($query);
@@ -82,8 +86,6 @@ $result = $stmt->get_result();
 //fetch the data
 $result_id = $result->fetch_assoc();
 
-
-
 // affectation d'un etudiant à un groupe entré en paramètre POST.
 if ($result_privilege['nom_privilege'] == 'etudiant') {
     $query = "INSERT INTO Appartient values(?,?)";
@@ -92,8 +94,7 @@ if ($result_privilege['nom_privilege'] == 'etudiant') {
     $stmt->execute();
 }
 
-//TODO -> Ajouter contraintes d'intégrités entre appartient et utilisateur, cours et user
-// Ajouter des vérifications de BDD, par exemple : ne pas pouvoir mettre dans un groupe qui n'existe pas etc..
+//TODO ->Ajouter des vérifications de BDD, par exemple : ne pas pouvoir mettre dans un groupe qui n'existe pas etc..
 
 header('Content-Type: application/json');
 echo json_encode([
