@@ -8,6 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
  * variables nécessaires :
  * POST['email_utilisateur'] et POST['mdp_utilisateur']
  */
+
+//vérifie que les variables sont initialisées.
 if (
     !isset($_POST['email_utilisateur'], $_POST['mdp_utilisateur'])
 ) {

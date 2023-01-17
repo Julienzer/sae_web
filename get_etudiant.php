@@ -19,18 +19,15 @@ if (!$verif_privilege) {
 // récupération de l'identifiant utilisateur.
 $id = $tokenData['id_utilisateur'];
 
-
 //récupération des cours de l'enseignant
 $query = 'SELECT * FROM COURS WHERE cours.id_regroupement IN (SELECT id_regroupement FROM Appartient WHERE Appartient.id_utilisateur = ? );';
 $stmt = $conn->prepare($query);
 $stmt->bind_param('s', $id);
 $stmt->execute();
 $result = $stmt->get_result();
-
-//fetch the data
 $cours_etudiant = $result->fetch_assoc();
 
-//return the data as JSON
+//affichage du résultat.
 header('Content-Type: application/json');
 if($cours_etudiant)
     echo json_encode($cours_etudiant);

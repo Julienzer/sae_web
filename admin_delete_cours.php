@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * variables nécessaires :
+ * token admin valide dans $_SERVEUR['AUTH'] (créer variable dans header sur postman)
+ * POST['id_cours_delete']
+ */
 $conn = include __DIR__ . '/includes/database_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -14,17 +18,17 @@ if (!$verif_privilege) {
 }
 //vérifie que toutes les variables ont été initialisées.
 if (
-    !isset($_POST['id_cours'])
+    !isset($_POST['id_cours_delete'])
 ) {
     http_response_code(401);
     return;
 }
 
 // récupération des variables entrées avec la méthode post.
-$cours = $_POST['id_cours'];
+$cours = $_POST['id_cours_delete'];
 
 
-//Insertion de la contrainte sur un prof par l'administrateur.
+//suppresion du cours.
 $query = "DELETE FROM cours WHERE `cours`.`id_cours` = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $cours);

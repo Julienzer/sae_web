@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * variables nécessaires :
+ *  token admin valide dans $_SERVEUR['AUTH'] (créer variable dans header sur postman)
+ * $_POST['nom_utilisateur_create'];
+ * $_POST['prenom_utilisateur_create'];
+ * $_POST['email_utilisateur_create'];
+ * $_POST['id_privilege_create'];
+ * $_POST['id_regroupement_create'];
+ * $_POST['mdp_utilisateur_create'];
+ *
+ */
 $conn = include __DIR__ . '/includes/database_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -20,7 +30,7 @@ if (
     http_response_code(401);
     return;
 }
-
+echo 'test';
 
 // récupération des variables entrées avec la méthode post.
 $nom = $_POST['nom_utilisateur_create'];

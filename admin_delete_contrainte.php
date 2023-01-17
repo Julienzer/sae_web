@@ -1,12 +1,8 @@
 <?php
-/** @var mysqli $conn */
+
 $conn = include __DIR__ . '/includes/database_connection.php';
 
-/** @var array $tokenData = [
- *      'id_utilisateur' => '1',
- *      'privilege' => 'administrateur'
- * }
- */
+
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

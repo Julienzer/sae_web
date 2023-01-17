@@ -1,6 +1,14 @@
 <?php
+//connexion à la base de donnée.
 $conn = include __DIR__ . '/includes/database_connection.php';
-
+/**
+ * variables nécessaires :
+ * token admin valide dans $_SERVEUR['AUTH'] (créer variable dans header sur postman)
+ * $_POST[table_update] : le nom de la table à mettre à jour. (ex : utilisateur)
+ * autant de variable POST['nom_champ']  que de champ à modifier. (ex : POST[email_utilisateur] = j.durieux@etud.picardie.fr)
+ *
+ *  $_POST['id_update']; : identifiant de la ligne à modifier (ex : 2)
+ */
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     return;
@@ -12,6 +20,7 @@ if (
     http_response_code(401);
     return;
 }
+
 //vérification du statut d'administrateur.
 require_once('./includes/check_privilege.php');
 $verif_privilege = check_privilege('administrateur');
@@ -31,15 +40,12 @@ $result = $stmt->get_result();
 while($row=$result->fetch_assoc()){
     $resultat[]=$row;
 }
-
 //conversion dans un array
-$colonne_categorie=array_column($resultat,'COLUMN_NAME');
-
-
+$nom_colonnes=array_column($resultat,'COLUMN_NAME');
 
 //listes des colonnes à mettre à jour.
 $colonnes_update = array();
-//variables POST.
+//liste de toutes les variables POST.
 $variables_POST = array();
 foreach ($_POST as $key => $value)
 {
@@ -47,27 +53,23 @@ foreach ($_POST as $key => $value)
     $variables_POST[] = $key;
 }
 
-//compare les colonnes de la base au variables POST entrées
-foreach ($colonne_categorie as $colonne){
+//compare les colonnes de la table au variables POST entrées
+foreach ($nom_colonnes as $colonne){
         if (in_array($colonne,$variables_POST,TRUE)) {
             $colonnes_update[] = $colonne;
         }
 }
-var_dump($colonnes_update);
-
+//liste des variables contenant le nom de la colonne et la valeur à entrer.
 $variables_POST_update = array();
 foreach ($_POST as $key =>$value){
     if(in_array($key,$colonnes_update,TRUE)){
         $variables_POST_update[$key] = $value;
     }
 }
-
-var_dump($variables_POST_update);
-
-
+//récupération de l'identifiant de la ligne à modifier.
 $id = $_POST['id_update'];
 
-//Build the update query
+//création de la requete de mise à jour.
 $query = "UPDATE utilisateur SET ";
 
 foreach ($variables_POST_update as $key => $value) {
@@ -75,15 +77,12 @@ foreach ($variables_POST_update as $key => $value) {
 }
 $query = rtrim($query, ",");
 $query .= " WHERE id_$table_upddate = ?";
-echo $query;
 
-// Execute the query
+// Execution de la requete.
 $stmt = $conn->prepare($query);
 $stmt->bind_param('i', $id);
 
 $stmt->execute();
 $result = $stmt->get_result();
-
-
 
 ?>

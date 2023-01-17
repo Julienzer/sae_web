@@ -1,17 +1,17 @@
 <?php
-
-/** @var mysqli $conn */
+/**
+ * variables nécessaires :
+ * $_SERVEUR['AUTH'] = token valide lié à un enseignant
+ */
+//connexion à la base.
 $conn = include __DIR__ . '/includes/database_connection.php';
 
-/** @var array $tokenData = [
- *      'id_user' => '1',
- *      'privilege' => 'admin'
- * }
- */
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     return;
 }
+
+
 //récupération du token
 $tokenData = include __DIR__ . '/includes/check_token.php';
 
@@ -25,7 +25,7 @@ if (!$verif_privilege) {
 //récupération de l'id utilisateur.
 $id = $tokenData['id_utilisateur'];
 
-//récupère les cours de l'utilisateur.
+//récupère les cours de l'enseignant.
 $query = "SELECT * FROM cours WHERE cours.id_utilisateur = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $id);
@@ -33,7 +33,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 $cours_enseignant = $result->fetch_assoc();
 
-//return the data as JSON
+//affichage du résultat.
 header('Content-Type: application/json');
 if($cours_enseignant)
     echo json_encode($cours_enseignant);

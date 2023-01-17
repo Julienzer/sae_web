@@ -1,15 +1,11 @@
 <?php
-/** @var mysqli $conn */
+//connexion à la base.
 $conn = include __DIR__ . '/includes/database_connection.php';
 
-/** @var array $tokenData = [
- *      'id_utilisateur' => '1',
- *      'privilege' => 'administrateur'
- * }
- */
 /**
  * variables nécessaires :
- * $_POST[email_utilisateur_delete]
+ * token admin valide dans $_SERVEUR['AUTH'] (créer variable dans header sur postman)
+ * $_POST[id_utilisateur_delete]
  *
  */
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -26,7 +22,7 @@ if (!$verif_privilege) {
 
 //vérifie que toutes les variables ont été initialisées.
 if (
-    !isset($_POST['email_utilisateur_delete'])
+    !isset($_POST['id_utilisateur_delete'])
 ) {
     http_response_code(401);
     return;
@@ -34,62 +30,29 @@ if (
 
 
 //récupération du mail de l'utilisateur à supprimer.
-$mail = $_POST['email_utilisateur_delete'];
+$mail = $_POST['id_utilisateur_delete'];
 
 // Vérifie que l'utilisateur existe bien dans la base.
-$query = "SELECT * FROM utilisateur WHERE email_utilisateur = ?";
+$query = "SELECT * FROM utilisateur WHERE id_utilisateur = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $mail);
 $stmt->execute();
 $result = $stmt->get_result();
 //fetch the data
-$course = $result->fetch_assoc();
-if (!$course){
+$exist = $result->fetch_assoc();
+if (!$exist){
     http_response_code(1802);
     header('Content-Type: application/json');
     echo json_encode([
-        'error' => 'Utilisateur innexistant'
+        'error' => 'Utilisateur inexistant'
     ]);
     return;
 }
-//TODO -> créer une fonction de vérification de rôle.
-// récupération du privilège
-$query = <<<EOF
-    select * 
-    from utilisateur,privilege 
-    where privilege.id_privilege = utilisateur.id_privilege 
-    and utilisateur.email_utilisateur = ?
-EOF;
-$stmt = $conn->prepare($query);
-$stmt->bind_param('s', $mail);
-$stmt->execute();
-$result = $stmt->get_result();
 
-//fetch the data
-$course = $result->fetch_assoc();
-//TODO -> appeler fonction privilege.
-if($course['nom_privilege'] == 'enseignant'){
-    $query = "DELETE FROM cours where id_utilisateur = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('s',$course['id_utilisateur']);
-
-    $stmt -> execute();
-}elseif ($course['nom_privilege'] == 'etudiant'){
-    $query = "DELETE FROM Appartient where id_utilisateur = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('s',$course['id_utilisateur']);
-
-    $stmt -> execute();
-}
-
-$query = "DELETE FROM token where id_utilisateur = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param('s',$course['id_utilisateur']);
-$stmt -> execute();
-
+//suppresion de l'utilisateur.
 $query = "DELETE FROM utilisateur where id_utilisateur = ?";
 $stmt = $conn->prepare($query);
-$stmt->bind_param('s',$course['id_utilisateur']);
+$stmt->bind_param('s',$mail);
 
 $stmt -> execute();
 
