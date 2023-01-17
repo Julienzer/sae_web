@@ -13,12 +13,12 @@ $tokenQ= <<<EOF
                 from token 
                 where token = ?);
 EOF;
-
 $stmt = $conn->prepare($tokenQ);
 $stmt->bind_param('s', $token);
 $stmt->execute();
 $res = $stmt->get_result();
 $data = $res->fetch_assoc();
+
 
 if (null === $data) {
     echo json_encode([

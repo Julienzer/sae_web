@@ -5,15 +5,14 @@ $conn = include __DIR__ . '/includes/database_connection.php';
 
 /** @var array $tokenData = [
  *      'id_user' => '1',
- *      'username' => 'user',
  *      'privilege' => 'admin'
  * }
  */
-
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     return;
 }
+
 $tokenData = include __DIR__ . '/includes/check_token.php';
 
 if ('enseignant' !== $tokenData['nom_privilege']) {
