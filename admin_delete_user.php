@@ -28,6 +28,7 @@ if (
     return;
 }
 
+
 //récupération du mail de l'utilisateur à supprimer.
 $mail = $_POST['email_user_delete'];
 

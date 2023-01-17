@@ -5,11 +5,11 @@ $conn = include __DIR__ . '/database_connection.php';
 $token = $_SERVER['HTTP_AUTH'];
 
 $tokenQ= <<<EOF
-    select u.id_user,p.nom_privilege
+    select u.id_utilisateur,p.nom_privilege
     from utilisateur u ,privilege p 
     where p.id_privilege = u.id_privilege 
-    and u.id_user 
-            in (select id_user 
+    and u.id_utilisateur 
+            in (select id_utilisateur 
                 from token 
                 where token = ?);
 EOF;

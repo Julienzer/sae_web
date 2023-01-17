@@ -23,10 +23,10 @@ $password = $_POST['password'];
 
 // todo : use crypt function, do NOT store plain password in database : https://www.php.net/manual/en/function.crypt.php
 $q = <<<EOF
-    SELECT u.id_user
+    SELECT u.id_utilisateur
     FROM utilisateur u
-    WHERE  u.email_user = ?
-    AND u.mdp_user = ?
+    WHERE  u.email_utilisateur = ?
+    AND u.mdp_utilisateur = ?
     LIMIT 1;
 EOF;
 $stmt = $conn->prepare($q);
@@ -44,12 +44,12 @@ if (null === $data) {
     return;
 }
 // récupération de l'identifiant utilisateur.
-$userId =  $data['id_user'];
+$userId =  $data['id_utilisateur'];
 // récupération d'un token lié à l'utilisateur.
 $tokenQ = <<<EOF
     SELECT *
     FROM token
-    WHERE token.id_user = ?
+    WHERE token.id_utilisateur = ?
 EOF;
 $stmt = $conn->prepare($tokenQ);
 $stmt->bind_param('d', $userId);
@@ -62,7 +62,7 @@ if (null === $data) {
     $token = bin2hex(random_bytes(16));
     //insertion dans la base du nouveau token.
     $insertTokenQ = <<<EOF
-        INSERT INTO token (id_user,token)
+        INSERT INTO token (id_utilisateur,token)
         VALUES (?, ?)
 EOF;
     $stmt = $conn->prepare($insertTokenQ);
