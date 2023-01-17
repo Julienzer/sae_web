@@ -37,7 +37,7 @@ header('Content-Type: application/json');
 if($course)
     echo json_encode($course);
 else
-    echo json_encode(array("error" => "No etudiant found with this id"));
+    echo json_encode(array("error" => "Aucun étudiant trouvé avec cet id."));
 
 $conn->close();
 

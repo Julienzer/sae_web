@@ -6,11 +6,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     return;
 }
-
 //vérification du statut d'administrateur.
 require_once('./includes/check_privilege.php');
 $verif_privilege = check_privilege('administrateur');
 if (!$verif_privilege) {
+    return;
+}
+//vérifie que toutes les variables ont été initialisées.
+if (
+    !isset($_POST['nom_user_create'], $_POST['prenom_user_create'], $_POST['email_user_create'],
+        $_POST['id_privilege_create'], $_POST['id_regroupement_create'], $_POST['mdp_user_create'])
+) {
+    http_response_code(401);
     return;
 }
 

@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     return;
 }
-
+//vérification du rôle d'enseignant.
 require_once('./includes/check_privilege.php');
 $verif_privilege = check_privilege('enseignant');
 if (!$verif_privilege) {

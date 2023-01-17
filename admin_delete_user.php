@@ -16,8 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 //vérification du rôle d'administrateur.
 require_once('./includes/check_privilege.php');
 $verif_privilege = check_privilege('administrateur');
-
 if (!$verif_privilege) {
+    return;
+}
+
+//vérifie que toutes les variables ont été initialisées.
+if (
+    !isset($_POST['email_user_delete'])
+) {
+    http_response_code(401);
     return;
 }
 
