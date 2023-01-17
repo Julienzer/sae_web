@@ -7,7 +7,10 @@ $conn = include __DIR__ . '/includes/database_connection.php';
  *      'privilege' => 'administrateur'
  * }
  */
-
+/**
+ * variables nécessaires :
+ *
+ */
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     return;
@@ -22,7 +25,7 @@ if (!$verif_privilege) {
 
 //vérifie que toutes les variables ont été initialisées.
 if (
-    !isset($_POST['email_user_delete'])
+    !isset($_POST['email_utilisateur_delete'])
 ) {
     http_response_code(401);
     return;
@@ -30,7 +33,7 @@ if (
 
 
 //récupération du mail de l'utilisateur à supprimer.
-$mail = $_POST['email_user_delete'];
+$mail = $_POST['email_utilisateur_delete'];
 
 // Vérifie que l'utilisateur existe bien dans la base.
 $query = "SELECT * FROM utilisateur WHERE email_user = ?";

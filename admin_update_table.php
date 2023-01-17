@@ -35,6 +35,8 @@ while($row=$result->fetch_assoc()){
 //conversion dans un array
 $colonne_categorie=array_column($resultat,'COLUMN_NAME');
 
+
+
 //listes des colonnes à mettre à jour.
 $colonnes_update = array();
 //variables POST.
@@ -44,12 +46,14 @@ foreach ($_POST as $key => $value)
     //récupération des clés de variables PHP.
     $variables_POST[] = $key;
 }
+
 //compare les colonnes de la base au variables POST entrées
 foreach ($colonne_categorie as $colonne){
         if (in_array($colonne,$variables_POST,TRUE)) {
             $colonnes_update[] = $colonne;
         }
 }
+var_dump($colonnes_update);
 
 $variables_POST_update = array();
 foreach ($_POST as $key =>$value){
