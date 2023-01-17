@@ -83,6 +83,7 @@ if ($result_privilege['nom_privilege'] == 'etudiant') {
 }
 
 //TODO -> Ajouter contraintes d'intégrités entre appartient et utilisateur, cours et user
+// Ajouter des vérifications de BDD, par exemple : ne pas pouvoir mettre dans un groupe qui n'existe pas etc..
 
 header('Content-Type: application/json');
 echo json_encode([
