@@ -14,8 +14,8 @@ if (!$verif_privilege) {
 }
 //vérifie que toutes les variables ont été initialisées.
 if (
-    !isset($_POST['nom_user_create'], $_POST['prenom_user_create'], $_POST['email_user_create'],
-        $_POST['id_privilege_create'], $_POST['id_regroupement_create'], $_POST['mdp_user_create'])
+    !isset($_POST['nom_utilisateur_create'], $_POST['prenom_utilisateur_create'], $_POST['email_utilisateur_create'],
+        $_POST['id_privilege_create'], $_POST['id_regroupement_create'], $_POST['mdp_utilisateur_create'])
 ) {
     http_response_code(401);
     return;
@@ -23,16 +23,16 @@ if (
 
 
 // récupération des variables entrées avec la méthode post.
-$nom = $_POST['nom_user_create'];
-$prenom = $_POST['prenom_user_create'];
-$mail = $_POST['email_user_create'];
+$nom = $_POST['nom_utilisateur_create'];
+$prenom = $_POST['prenom_utilisateur_create'];
+$mail = $_POST['email_utilisateur_create'];
 $privilege = $_POST['id_privilege_create'];
 $regroupement = $_POST['id_regroupement_create'];
-$password = $_POST['mdp_user_create'];
+$password = $_POST['mdp_utilisateur_create'];
 
 
 //vérifie que l'utilisateur n'est pas déjà présent dans la base en comparant l'adresse mail.
-$query = "SELECT * FROM utilisateur WHERE email_user = ?";
+$query = "SELECT * FROM utilisateur WHERE email_utilisateur = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $mail);
 $stmt->execute();
@@ -49,7 +49,7 @@ if ($check){
 }
 
 //Insertion du nouvel utilisateur dans la base.
-$query = "INSERT INTO utilisateur (nom_user,prenom_user,email_user,id_privilege,mdp_user) VALUES (?,?,?,?,?)";
+$query = "INSERT INTO utilisateur (nom_utilisateur,prenom_utilisateur,email_utilisateur,id_privilege,mdp_utilisateur) VALUES (?,?,?,?,?)";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("sssis",$nom,$prenom, $mail, $privilege, $password);
 $stmt->execute();
@@ -64,7 +64,7 @@ $result = $stmt->get_result();
 $result_privilege = $result->fetch_assoc();
 
 //récupération de l'id de l'utilisateur pour l'affectation d'un etudiant à un groupe.
-$query = "SELECT id_user FROM utilisateur WHERE email_user = ?";
+$query = "SELECT id_utilisateur FROM utilisateur WHERE email_utilisateur = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $mail);
 $stmt->execute();
@@ -78,7 +78,7 @@ $result_id = $result->fetch_assoc();
 if ($result_privilege['nom_privilege'] == 'etudiant') {
     $query = "INSERT INTO Appartient values(?,?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ii',$result_id['id_user'],$regroupement);
+    $stmt->bind_param('ii',$result_id['id_utilisateur'],$regroupement);
     $stmt->execute();
 }
 

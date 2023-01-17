@@ -4,9 +4,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     return;
 }
-//TODO : créer une fonction de verif isset ?
+/**
+ * variables nécessaires :
+ * POST['email_utilisateur'] et POST['mdp_utilisateur']
+ */
 if (
-    !isset($_POST['email'], $_POST['password'])
+    !isset($_POST['email_utilisateur'], $_POST['mdp_utilisateur'])
 ) {
     http_response_code(401);
     return;
@@ -17,8 +20,8 @@ if (
 $conn = include __DIR__ . '/includes/database_connection.php';
 
 //récupération du mail et mot de passe entré en variables POST.
-$login = $_POST['email'];
-$password = $_POST['password'];
+$login = $_POST['email_utilisateur'];
+$password = $_POST['mdp_utilisateur'];
 
 
 // todo : use crypt function, do NOT store plain password in database : https://www.php.net/manual/en/function.crypt.php
@@ -72,6 +75,7 @@ EOF;
     $token = $data['token'];
 }
 
+$_SERVER['HTTP_AUTH'] = $token;
 header('Content-Type: application/json');
 echo json_encode([
     'token' => $token

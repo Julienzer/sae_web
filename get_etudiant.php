@@ -1,49 +1,39 @@
 <?php
 
-/** @var mysqli $conn */
+
 $conn = include __DIR__ . '/includes/database_connection.php';
 
-/** @var array $tokenData = [
- *      'id_user' => '1',
- *      'username' => 'user',
- *      'privilege' => 'admin'
- * }
- */
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     return;
 }
-
+//récupération du token.
 $tokenData = include __DIR__ . '/includes/check_token.php';
 
-
-if ('etudiant' !== $tokenData['nom_privilege']) {
-    http_response_code(401);
-    header('Content-Type: application/json');
-    echo json_encode([
-        'error' => 'Permissions insufisantes.'
-    ]);
+//vérification du statut utilisateur.
+require_once('./includes/check_privilege.php');
+$verif_privilege = check_privilege('etudiant');
+if (!$verif_privilege) {
     return;
 }
+// récupération de l'identifiant utilisateur.
+$id = $tokenData['id_utilisateur'];
 
-$id = $tokenData['id_user'];
 
-
-
-//query the etudiant table
-$query = 'SELECT * FROM COURS WHERE cours.id_regroupement IN (SELECT id_regroupement FROM Appartient WHERE Appartient.id_user = ? );';
+//récupération des cours de l'enseignant
+$query = 'SELECT * FROM COURS WHERE cours.id_regroupement IN (SELECT id_regroupement FROM Appartient WHERE Appartient.id_utilisateur = ? );';
 $stmt = $conn->prepare($query);
 $stmt->bind_param('s', $id);
 $stmt->execute();
 $result = $stmt->get_result();
 
 //fetch the data
-$course = $result->fetch_assoc();
+$cours_etudiant = $result->fetch_assoc();
 
 //return the data as JSON
 header('Content-Type: application/json');
-if($course)
-    echo json_encode($course);
+if($cours_etudiant)
+    echo json_encode($cours_etudiant);
 else
     echo json_encode(array("error" => "No etudiant found with this id"));
 

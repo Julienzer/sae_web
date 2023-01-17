@@ -3,7 +3,7 @@
 $conn = include __DIR__ . '/includes/database_connection.php';
 
 /** @var array $tokenData = [
- *      'id_user' => '1',
+ *      'id_utilisateur' => '1',
  *      'privilege' => 'administrateur'
  * }
  */

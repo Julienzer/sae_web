@@ -14,7 +14,7 @@ if (!$verif_privilege) {
 }
 //vérifie que toutes les variables ont été initialisées.
 if (
-    !isset($_POST['heure_debut_contrainte'], $_POST['heure_fin_contrainte'], $_POST['id_user'])
+    !isset($_POST['heure_debut_contrainte'], $_POST['heure_fin_contrainte'], $_POST['id_utilisateur'])
 ) {
     http_response_code(401);
     return;
@@ -23,12 +23,12 @@ if (
 // récupération des variables entrées avec la méthode post.
 $debut = $_POST['heure_debut_contrainte'];
 $fin = $_POST['heure_fin_contrainte'];
-$id_user = $_POST['id_user'];
+$id_utilisateur = $_POST['id_utilisateur'];
 
 //Insertion de la contrainte sur un prof par l'administrateur.
-$query = "INSERT INTO `contrainte` (`heure_debut_contrainte`, `heure_fin_contrainte`, `id_user`) VALUES (?,?,?);";
+$query = "INSERT INTO `contrainte` (`heure_debut_contrainte`, `heure_fin_contrainte`, `id_utilisateur`) VALUES (?,?,?);";
 $stmt = $conn->prepare($query);
-$stmt->bind_param("ssi", $debut, $fin, $id_user);
+$stmt->bind_param("ssi", $debut, $fin, $id_utilisateur);
 $stmt->execute();
 $result = $stmt->get_result();
 

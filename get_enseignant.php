@@ -12,39 +12,33 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     return;
 }
-
+//récupération du token
 $tokenData = include __DIR__ . '/includes/check_token.php';
 
-if ('enseignant' !== $tokenData['nom_privilege']) {
-    http_response_code(401);
-    header('Content-Type: application/json');
-    echo json_encode([
-        'error' => 'Infufifant permissions 🤓'
-    ]);
+//vérification du statut d'administrateur.
+require_once('./includes/check_privilege.php');
+$verif_privilege = check_privilege('enseignant');
+if (!$verif_privilege) {
     return;
 }
 
+//récupération de l'id utilisateur.
+$id = $tokenData['id_utilisateur'];
 
-$id = $tokenData['id_user'];
-
-
-
-//query the etudiant table
-$query = "SELECT * FROM cours WHERE cours.id_user = ?";
+//récupère les cours de l'utilisateur.
+$query = "SELECT * FROM cours WHERE cours.id_utilisateur = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $id);
 $stmt->execute();
 $result = $stmt->get_result();
-
-//fetch the data
-$course = $result->fetch_assoc();
+$cours_enseignant = $result->fetch_assoc();
 
 //return the data as JSON
 header('Content-Type: application/json');
-if($course)
-    echo json_encode($course);
+if($cours_enseignant)
+    echo json_encode($cours_enseignant);
 else
-    echo json_encode(array("error" => "No enseignant found with this id"));
+    echo json_encode(array("error" => "Aucun enseignant trouvé avec cet identifiant, ou pas de cours enregistré"));
 
 $conn->close();
 
