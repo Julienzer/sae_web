@@ -55,7 +55,7 @@ $result = $stmt->get_result();
 
 //fetch the data
 $course = $result->fetch_assoc();
-
+//TODO -> appeler fonction privilege.
 if($course['nom_privilege'] == 'enseignant'){
     $query = "DELETE FROM cours where id_user = ?";
     $stmt = $conn->prepare($query);

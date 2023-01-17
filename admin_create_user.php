@@ -16,12 +16,12 @@ if (!$verif_privilege) {
 
 
 // récupération des variables entrées avec la méthode post.
-$nom = $_POST['nom_new_user'];
-$prenom = $_POST['prenom_new_user'];
-$mail = $_POST['email_new_user'];
-$privilege = $_POST['id_new_privilege'];
-$regroupement = $_POST['id_new_regroupement'];
-$password = $_POST['mdp_new_user'];
+$nom = $_POST['nom_user_create'];
+$prenom = $_POST['prenom_user_create'];
+$mail = $_POST['email_user_create'];
+$privilege = $_POST['id_privilege_create'];
+$regroupement = $_POST['id_regroupement_create'];
+$password = $_POST['mdp_user_create'];
 
 
 //vérifie que l'utilisateur n'est pas déjà présent dans la base en comparant l'adresse mail.
