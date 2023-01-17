@@ -18,11 +18,6 @@ require_once('./includes/check_privilege.php');
 $verif_privilege = check_privilege('administrateur');
 
 if (!$verif_privilege) {
-    http_response_code(401);
-    header('Content-Type: application/json');
-    echo json_encode([
-        'error' => 'oh tes qui toi'
-    ]);
     return;
 }
 

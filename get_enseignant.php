@@ -13,26 +13,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     return;
 }
 
-$tokenData = include __DIR__ . '/includes/check_token.php';
-
-if ('enseignant' !== $tokenData['nom_privilege']) {
-    http_response_code(401);
-    header('Content-Type: application/json');
-    echo json_encode([
-        'error' => 'Infufifant permissions 🤓'
-    ]);
+require_once('./includes/check_privilege.php');
+$verif_privilege = check_privilege('enseignant');
+if (!$verif_privilege) {
     return;
 }
 
-
-$id = $tokenData['id_user'];
-
-
+$tokenData = include __DIR__ . '/includes/check_token.php';
 
 //query the etudiant table
 $query = "SELECT * FROM cours WHERE cours.id_user = ?";
 $stmt = $conn->prepare($query);
-$stmt->bind_param("s", $id);
+$stmt->bind_param("s", $tokenData['id_user']);
 $stmt->execute();
 $result = $stmt->get_result();
 

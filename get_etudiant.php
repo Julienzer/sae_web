@@ -16,24 +16,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $tokenData = include __DIR__ . '/includes/check_token.php';
 
-
-if ('etudiant' !== $tokenData['nom_privilege']) {
-    http_response_code(401);
-    header('Content-Type: application/json');
-    echo json_encode([
-        'error' => 'Permissions insufisantes.'
-    ]);
+require_once('./includes/check_privilege.php');
+$verif_privilege = check_privilege('etudiant');
+if (!$verif_privilege) {
     return;
 }
-
-$id = $tokenData['id_user'];
-
-
 
 //query the etudiant table
 $query = 'SELECT * FROM COURS WHERE cours.id_regroupement IN (SELECT id_regroupement FROM Appartient WHERE Appartient.id_user = ? );';
 $stmt = $conn->prepare($query);
-$stmt->bind_param('s', $id);
+$stmt->bind_param('s', $tokenData['id_user']);
 $stmt->execute();
 $result = $stmt->get_result();
 

@@ -7,26 +7,21 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     return;
 }
 
-
 //vérification du statut d'administrateur.
 require_once('./includes/check_privilege.php');
 $verif_privilege = check_privilege('administrateur');
 if (!$verif_privilege) {
-    http_response_code(401);
-    header('Content-Type: application/json');
-    echo json_encode([
-        'error' => 'you are not an admin'
-    ]);
     return;
 }
+
 
 // récupération des variables entrées avec la méthode post.
 $nom = $_POST['nom_new_user'];
 $prenom = $_POST['prenom_new_user'];
 $mail = $_POST['email_new_user'];
 $privilege = $_POST['id_new_privilege'];
-$regroupement = $_POST['id_regroupement'];
-$password = $_POST['mdp_user'];
+$regroupement = $_POST['id_new_regroupement'];
+$password = $_POST['mdp_new_user'];
 
 
 //vérifie que l'utilisateur n'est pas déjà présent dans la base en comparant l'adresse mail.
@@ -47,7 +42,7 @@ if ($check){
 }
 
 //Insertion du nouvel utilisateur dans la base.
-$query = "INSERT INTO utilisateur (nom_user,prenom_user,email_user,id_privilege,pwd) VALUES (?,?,?,?,?)";
+$query = "INSERT INTO utilisateur (nom_user,prenom_user,email_user,id_privilege,mdp_user) VALUES (?,?,?,?,?)";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("sssis",$nom,$prenom, $mail, $privilege, $password);
 $stmt->execute();
